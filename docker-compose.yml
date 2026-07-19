@@ -1,0 +1,134 @@
+version: "3.9"
+
+services:
+
+  app:
+    build: .
+    image: vitrage-analyzer-api:latest
+    container_name: vitrage-analyzer-api
+
+    restart: unless-stopped
+
+    ports:
+      - "8080:8080"
+
+    env_file:
+      - .env
+
+    volumes:
+      - .:/app
+
+    depends_on:
+      database:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://localhost:8080/health')"
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+    networks:
+      - vitrage-network
+
+
+  worker:
+    build: .
+    image: vitrage-analyzer-worker:latest
+    container_name: vitrage-analyzer-worker
+
+    restart: unless-stopped
+
+    command: python -m app.workers.rabbit_worker
+
+    env_file:
+      - .env
+
+    volumes:
+      - .:/app
+
+    depends_on:
+      database:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+    networks:
+      - vitrage-network
+
+
+  rabbitmq:
+    image: rabbitmq:3.13.1-management-alpine
+    container_name: vitrage-rabbitmq
+
+    restart: unless-stopped
+
+    hostname: rabbitmq
+
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS}
+      - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbit disk_free_limit 2147483648
+
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_running"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+    volumes:
+      - rabbitmq_volume:/var/lib/rabbitmq
+
+    networks:
+      - vitrage-network
+
+
+  database:
+    image: postgres:16-alpine
+    container_name: vitrage-database
+
+    restart: unless-stopped
+
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+
+    ports:
+      - "5432:5432"
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+    volumes:
+      - postgres_volume:/var/lib/postgresql/data
+
+    networks:
+      - vitrage-network
+
+
+volumes:
+  postgres_volume:
+  rabbitmq_volume:
+
+
+networks:
+  vitrage-network:
+    driver: bridge
