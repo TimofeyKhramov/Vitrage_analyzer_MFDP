@@ -25,5 +25,5 @@ class AnalysisResult(SQLModel, table=True):
     drawing_id: UUID = Field(foreign_key="drawings.id", ondelete="CASCADE")
 
     drawing: "Drawing" = Relationship(
-        back_populates="analysis_results", cascade_delete=True
+        back_populates="analysis_results"
     )
