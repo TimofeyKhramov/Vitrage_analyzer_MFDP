@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-
 from app.routes.home import home_route
+from app.core.config import settings
+
 
 app = FastAPI(
     title="Vitrage Analyzer",
