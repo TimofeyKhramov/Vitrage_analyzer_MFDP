@@ -25,11 +25,11 @@ class Document(SQLModel, table=True):
 
     id: UUID = Field(default_factory=uuid4, primary_key=True)
 
-    filename: str
-
-    filepath: str
+    source_filename: str
 
     pages: int
+
+    requested_pages: str = Field(max_length=255)
 
     status: DocumentStatus = Field(default=DocumentStatus.uploaded)
 

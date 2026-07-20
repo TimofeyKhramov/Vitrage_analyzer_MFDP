@@ -94,7 +94,7 @@ async def login(
     token = create_access_token(user.id)
 
     response = RedirectResponse(
-        url="/documents/upload",
+        url="/documents/to_form",
         status_code=status.HTTP_303_SEE_OTHER,
     )
 

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}
+Документ
+{% endblock %}
+
+{% block content %}
+
+<div class="upload-header">
+
+    <h1>{{ document.source_filename }}</h1>
+
+    <p>
+        Документ успешно загружен
+    </p>
+
+</div>
+
+<table class="document-table">
+
+    <tr>
+        <td>Статус</td>
+        <td>{{ document.status }}</td>
+    </tr>
+
+    <tr>
+        <td>Количество страниц</td>
+        <td>{{ document.pages }}</td>
+    </tr>
+
+    <tr>
+        <td>Выбранные страницы</td>
+        <td>{{ document.requested_pages }}</td>
+    </tr>
+
+    <tr>
+        <td>Дата загрузки</td>
+        <td>{{ document.uploaded_at }}</td>
+    </tr>
+
+</table>
+
+<div style="margin-top:30px">
+
+    <a
+        href="/documents/to_form"
+        class="upload-button"
+        style="
+            display:block;
+            text-align:center;
+            text-decoration:none;
+        "
+    >
+        Загрузить ещё документ
+    </a>
+
+</div>
+
+{% endblock %}
