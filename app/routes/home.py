@@ -11,5 +11,5 @@ templates = Jinja2Templates(directory="app/templates")
 async def index(request: Request):
     return templates.TemplateResponse(
         request=request,
-        name="index.html",
+        name="base.html",
     )

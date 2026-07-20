@@ -1,0 +1,75 @@
+<!-- <form method="post" action="/auth/register">
+
+    <input name="username">
+
+    <input name="email">
+
+    <input name="password">
+
+    <button>Register</button>
+
+</form> -->
+
+{% extends "base.html" %}
+
+{% block title %}
+Вход
+{% endblock %}
+
+{% block content %}
+
+<h1>Vitrage Analyzer</h1>
+
+<p class="subtitle">
+    Регистрация
+</p>
+
+{% if error %}
+<div class="error">
+    {{ error }}
+</div>
+{% endif %}
+
+<form action="/auth/register" method="post">
+
+    <div>
+
+        <label>Создайте имя пользователя</label>
+
+        <input
+                type="text"
+                name="username"
+                required>
+
+    </div>
+
+    <div>
+
+        <label>Создайте email</label>
+
+        <input
+                type="email"
+                name="email"
+                required>
+
+    </div>
+
+    <div>
+
+        <label>Создайте пароль</label>
+
+        <input
+                type="password"
+                name="password"
+                required>
+
+    </div>
+
+    <button type="submit">
+        Войти
+    </button>
+
+</form>
+
+
+{% endblock %}

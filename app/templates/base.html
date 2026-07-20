@@ -1,0 +1,279 @@
+<!-- <!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Vitrage Analyzer4</title>
+
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+
+<h1>Vitrage Analyzer</h1>
+
+<p>Сервис анализа проектной документации.</p>
+
+</body>
+
+</html> -->
+
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+
+        {% block title %}
+
+        Vitrage Analyzer
+
+        {% endblock %}
+
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', path='css/style.css') }}"
+    >
+
+</head>
+
+<body>
+
+<div class="card">
+
+    {% block content %}
+
+    {% endblock %}
+
+</div>
+
+</body>
+
+</html>
+
+<!-- <!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vitrage Analyzer 4 — Анализ проектной документации</title>
+
+    <link rel="stylesheet" href="/static/css/style.css">
+    
+    <style>
+        /* Дополнительные стили для презентабельного вида */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 60px 50px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12), 0 8px 24px rgba(0, 0, 0, 0.06);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .container:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
+        }
+
+        .logo-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        h1 {
+            font-size: 42px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .version-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 4px 16px;
+            border-radius: 20px;
+            margin-bottom: 24px;
+            letter-spacing: 0.3px;
+        }
+
+        .divider {
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 4px;
+            margin: 20px auto 24px;
+        }
+
+        .description {
+            font-size: 18px;
+            line-height: 1.7;
+            color: #4a4a5a;
+            margin-bottom: 32px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 16px;
+            margin-top: 8px;
+        }
+
+        .feature-item {
+            background: #f8f9fc;
+            padding: 16px 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #2d2d44;
+            font-weight: 500;
+            transition: background 0.2s ease, transform 0.2s ease;
+            border: 1px solid #eef0f5;
+        }
+
+        .feature-item:hover {
+            background: #eef0f7;
+            transform: scale(1.02);
+        }
+
+        .feature-item span {
+            display: block;
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            margin-top: 32px;
+            padding: 14px 40px;
+            background: linear-gradient(135deg, #7b51be 0%, #a663ea 100%);
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            text-decoration: none;
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.35);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.45);
+        }
+
+        .footer-note {
+            margin-top: 28px;
+            font-size: 13px;
+            color: #8a8aa0;
+            letter-spacing: 0.2px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 40px 24px;
+            }
+
+            h1 {
+                font-size: 30px;
+            }
+
+            .description {
+                font-size: 16px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <span class="logo-icon">🔍</span>
+
+        <h1>Vitrage Analyzer</h1>
+        <div class="version-badge">v4.0</div>
+
+        <div class="divider"></div>
+
+        <p class="description">
+            Сервис анализа проектной документации.<br>
+            Быстро, точно, профессионально.
+        </p>
+
+        <div class="features-grid">
+            <div class="feature-item">
+                <span>📄</span>
+                Загрузка документов
+            </div>
+            <div class="feature-item">
+                <span>⚡</span>
+                Мгновенный анализ
+            </div>
+            <div class="feature-item">
+                <span>📊</span>
+                Отчёты и графики
+            </div>
+            <div class="feature-item">
+                <span>🔒</span>
+                Безопасность данных
+            </div>
+        </div>
+
+        <a href="#" class="cta-button">Начать анализ →</a>
+
+        <div class="footer-note">
+            ✦ Автоматизированная проверка документации ✦
+        </div>
+    </div>
+
+</body>
+
+</html> -->

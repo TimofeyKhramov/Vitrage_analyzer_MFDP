@@ -14,7 +14,7 @@ auth_route = APIRouter(prefix="/auth", tags=["Authentication"])
 @auth_route.get("/register")
 async def register_page(request: Request):
     return templates.TemplateResponse(
-        "register.html",
+        "auth/register.html",
         {
             "request": request,
         },
@@ -65,7 +65,7 @@ async def register(
 @auth_route.get("/login")
 async def login_page(request: Request):
     return templates.TemplateResponse(
-        "login.html",
+        "auth/login.html",
         {
             "request": request,
         },
