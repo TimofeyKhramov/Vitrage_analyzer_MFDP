@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Request
 
 from app.models.user import User
 from app.routes.deps import get_current_user
-from app.core.templates import templates
+from app.templates.jinja import templates
 
 documents_router = APIRouter(prefix="/documents")
 
@@ -17,5 +17,6 @@ async def upload_page(
         {
             "request": request,
             "current_user": current_user,
+            "container_class": "card card-upload"
         },
     )

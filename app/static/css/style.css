@@ -12,14 +12,30 @@ body{
     align-items:center;
     min-height:100vh;
     color:#333;
+    min-width:300px;
 }
 
 .card{
-    width:420px;
     background:white;
-    border-radius:12px;
+    border-radius:16px;
     padding:40px;
     box-shadow:0 10px 25px rgba(0,0,0,.08);
+}
+
+.card-register{
+    width:420px;
+}
+
+.card-login{
+    width:420px;
+}
+
+.card-upload{
+    width:950px;
+}
+
+.card-xl{
+    width:1200px;
 }
 
 h1{
@@ -96,5 +112,119 @@ button:hover{
     color:#b91c1c;
     border-radius:8px;
     text-align:center;
+}
+
+.upload-container{
+    width:100%;
+    min-width:500px;
+}
+
+.upload-header{
+    text-align:center;
+    margin-bottom:35px;
+    min-width:500px;
+}
+
+.upload-header h1{
+    font-size:34px;
+    margin-bottom:8px;
+    color:#1e293b;
+}
+
+.upload-header p{
+    color:#64748b;
+    font-size:16px;
+}
+
+.drop-zone{
+    border:3px dashed #cbd5e1;
+    border-radius:18px;
+    background:#f8fafc;
+    cursor:pointer;
+    transition:.25s;
+
+    min-height:220px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    padding:50px 50px;
+}
+
+.drop-zone:hover{
+    border-color:#2563eb;
+    background:#eff6ff;
+}
+
+.drop-zone.dragover{
+    border-color:#2563eb;
+    background:#dbeafe;
+}
+
+.drop-icon{
+    font-size:70px;
+    margin-bottom:18px;
+}
+
+.drop-zone h2{
+    margin-bottom:10px;
+    color:#1e293b;
+}
+
+.drop-zone p{
+    color:#64748b;
+    margin-bottom:20px;
+}
+
+.selected-file{
+    display:inline-block;
+    padding:10px 20px;
+    background:white;
+    border-radius:10px;
+    border:1px solid #d1d5db;
+    font-weight:600;
+}
+
+.form-group{
+    margin-top:30px;
+}
+
+.form-group label{
+    display:block;
+    margin-bottom:8px;
+    font-weight:600;
+}
+
+.form-group input{
+    width:100%;
+    padding:14px;
+    border-radius:10px;
+    border:1px solid #d1d5db;
+    font-size:15px;
+}
+
+.form-group small{
+    display:block;
+    margin-top:8px;
+    color:#64748b;
+}
+
+.upload-button{
+    width:100%;
+    margin-top:35px;
+    padding:16px;
+    border:none;
+    border-radius:10px;
+    background:#2563eb;
+    color:white;
+    font-size:17px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.upload-button:hover{
+    background:#1d4ed8;
 }
 

@@ -3,6 +3,8 @@ from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
 from app.routes.home import home_route
 from app.routes.auth import auth_route
+from app.routes.deps import get_current_user
+from app.routes.documents import documents_router
 from app.core.config import settings
 from sqlalchemy import text
 from app.core.database import engine, init_db
@@ -39,6 +41,7 @@ app.mount(
 
 app.include_router(home_route)
 app.include_router(auth_route)
+app.include_router(documents_router)
 
 @app.get("/db-health")
 async def db_health():

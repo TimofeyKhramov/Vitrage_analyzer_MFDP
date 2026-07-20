@@ -17,6 +17,7 @@ async def register_page(request: Request):
         "auth/register.html",
         {
             "request": request,
+            "container_class": "card card-register"
         },
     )
 
@@ -47,7 +48,7 @@ async def register(
     token = create_access_token(user.id)
 
     response = RedirectResponse(
-        url="/health",
+        url="/auth/login",
         status_code=status.HTTP_303_SEE_OTHER,
     )
 
@@ -93,7 +94,7 @@ async def login(
     token = create_access_token(user.id)
 
     response = RedirectResponse(
-        url="/upload",
+        url="/documents/upload",
         status_code=status.HTTP_303_SEE_OTHER,
     )
 

@@ -49,12 +49,9 @@
 
 <body>
 
-<div class="card">
-
+<div class="{{ container_class | default('card card-register') }}">
     {% block content %}
-
     {% endblock %}
-
 </div>
 
 </body>
