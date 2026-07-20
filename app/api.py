@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
 from app.routes.home import home_route
+from app.routes.auth import auth_route
 from app.core.config import settings
 from sqlalchemy import text
 from app.core.database import engine, init_db
@@ -37,6 +38,7 @@ app.mount(
 )
 
 app.include_router(home_route)
+app.include_router(auth_route)
 
 @app.get("/db-health")
 async def db_health():
