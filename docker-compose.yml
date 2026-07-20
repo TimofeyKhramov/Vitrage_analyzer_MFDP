@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
 
   app:
@@ -41,29 +39,29 @@ services:
       - vitrage-network
 
 
-  worker:
-    build: .
-    image: vitrage-analyzer-worker:latest
-    container_name: vitrage-analyzer-worker
+  # worker:
+  #   build: .
+  #   image: vitrage-analyzer-worker:latest
+  #   container_name: vitrage-analyzer-worker
 
-    restart: unless-stopped
+  #   restart: unless-stopped
 
-    command: python -m app.workers.rabbit_worker
+  #   command: python -m app.workers.rabbit_worker
 
-    env_file:
-      - .env
+  #   env_file:
+  #     - .env
 
-    volumes:
-      - .:/app
+  #   volumes:
+  #     - .:/app
 
-    depends_on:
-      database:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
+  #   depends_on:
+  #     database:
+  #       condition: service_healthy
+  #     rabbitmq:
+  #       condition: service_healthy
 
-    networks:
-      - vitrage-network
+  #   networks:
+  #     - vitrage-network
 
 
   rabbitmq:
