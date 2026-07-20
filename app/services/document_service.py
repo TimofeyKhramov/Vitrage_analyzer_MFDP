@@ -24,6 +24,15 @@ class DocumentService:
             exist_ok=True,
         )
 
+    @staticmethod
+    def get_pages_count(pdf_path: Path) -> int:
+        """
+        Возвращает количество страниц PDF.
+        """
+
+        with fitz.open(pdf_path) as pdf:
+            return pdf.page_count
+    
     def create_workspace(
     self,
     document_id: UUID,
@@ -55,6 +64,15 @@ class DocumentService:
 
         return pdf_path
     
+    def get_document(
+    self,
+    document_id: UUID,
+        ) -> Document | None:
+        return self.session.get(
+        Document,
+        document_id,
+        )
+    
     def create_document(
     self,
     user_id: UUID,
@@ -74,7 +92,10 @@ class DocumentService:
             pages=pages,
             status=DocumentStatus.uploaded,
             user_id=user_id,
+            requested_pages=requested_pages
         )
+
+    
 
         self.session.add(document)
 

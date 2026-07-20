@@ -3,10 +3,12 @@ from fastapi import APIRouter, Depends, Request
 from app.models.user import User
 from app.routes.deps import get_current_user
 from app.templates.jinja import templates
+from app.services.document_service import DocumentService
+from app.core.database import get_session
+from app.models.document import Document
 from uuid import UUID
-
-from sqlmodel import select
-
+from sqlmodel import select, Session
+from fastapi.responses import RedirectResponse
 
 documents_router = APIRouter(prefix="/documents")
 
@@ -45,8 +47,8 @@ documents_router = APIRouter(
 )
 
 
-@documents_router.get("/to_form")
-async def upload_page(
+@documents_router.get("/form")
+async def upload_form(
     request: Request,
     current_user: User = Depends(get_current_user),
 ):
@@ -55,12 +57,12 @@ async def upload_page(
         {
             "request": request,
             "current_user": current_user,
-            "container_class": "card card-lg",
+            "container_class": "card card-upload",
         },
     )
 
 
-@documents_router.post("/upload")
+@documents_router.post("/form")
 async def upload_document(
     request: Request,
     file: UploadFile = File(...),
@@ -70,11 +72,11 @@ async def upload_document(
 ):
     if file.content_type != "application/pdf":
         return templates.TemplateResponse(
-            "documents/upload.html",
+            "upload.html",
             {
                 "request": request,
                 "current_user": current_user,
-                "container_class": "card card-lg",
+                "container_class": "card card-upload",
                 "error": "Можно загрузить только PDF-файл.",
             },
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -92,6 +94,7 @@ async def upload_document(
         url=f"/documents/{document.id}",
         status_code=status.HTTP_303_SEE_OTHER,
     )
+
 @documents_router.get("/{document_id}")
 async def document_page(
     document_id: UUID,
@@ -99,27 +102,18 @@ async def document_page(
     session: Session = Depends(get_session),
     current_user: User = Depends(get_current_user),
 ):
-    document = session.exec(
-        select(Document).where(Document.id == document_id)
-    ).first()
+    service = DocumentService(session)
+
+    document = service.get_document(document_id)
 
     if document is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Документ не найден.",
-        )
-
-    if document.user_id != current_user.id:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Нет доступа к документу.",
-        )
+        raise HTTPException(status_code=404, detail="Document not found")
 
     return templates.TemplateResponse(
         "documents/document.html",
         {
             "request": request,
             "document": document,
-            "container_class": "card card-md",
+            "container_class": "card card-upload",
         },
     )

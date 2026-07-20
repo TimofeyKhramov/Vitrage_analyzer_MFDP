@@ -11,7 +11,7 @@
     <h1>{{ document.source_filename }}</h1>
 
     <p>
-        Документ успешно загружен
+        Информация о документе
     </p>
 
 </div>
@@ -19,8 +19,8 @@
 <table class="document-table">
 
     <tr>
-        <td>Статус</td>
-        <td>{{ document.status }}</td>
+        <td>ID</td>
+        <td>{{ document.id }}</td>
     </tr>
 
     <tr>
@@ -29,8 +29,13 @@
     </tr>
 
     <tr>
-        <td>Выбранные страницы</td>
+        <td>Страницы для анализа</td>
         <td>{{ document.requested_pages }}</td>
+    </tr>
+
+    <tr>
+        <td>Статус</td>
+        <td>{{ document.status.value }}</td>
     </tr>
 
     <tr>
@@ -40,20 +45,12 @@
 
 </table>
 
-<div style="margin-top:30px">
-
-    <a
-        href="/documents/to_form"
-        class="upload-button"
-        style="
-            display:block;
-            text-align:center;
-            text-decoration:none;
-        "
-    >
-        Загрузить ещё документ
-    </a>
-
-</div>
+<a
+    href="/documents/form"
+    class="upload-button"
+    style="display:block;text-align:center;text-decoration:none;margin-top:30px;"
+>
+    Загрузить ещё документ
+</a>
 
 {% endblock %}
