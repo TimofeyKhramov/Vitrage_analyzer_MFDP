@@ -1,6 +1,10 @@
 from sqlmodel import Session, SQLModel, create_engine
-
 from app.core.config import settings
+from app.models.user import User
+from app.models.document import Document
+from app.models.drawing import DrawingPage
+from app.models.analysis_result import AnalysisResult
+
 
 engine = create_engine(
     settings.database_url,
