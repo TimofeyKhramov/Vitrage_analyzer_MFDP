@@ -1,14 +1,33 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
+from contextlib import asynccontextmanager
 from app.routes.home import home_route
 from app.core.config import settings
 from sqlalchemy import text
+from app.core.database import engine, init_db
+from app.templates.jinja import templates
+import logging
 
-from app.core.database import engine
+
+logger = logging.getLogger(__name__)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+
+    logger.info("Initializing database...")
+
+    init_db()
+
+    logger.info("Database initialized successfully.")
+
+    yield
+
+    logger.info("Application stopped.")
 
 app = FastAPI(
     title="Vitrage Analyzer",
     version="1.0.0",
+    lifespan=lifespan,
 )
 
 app.mount(
