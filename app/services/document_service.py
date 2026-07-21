@@ -8,6 +8,8 @@ from sqlmodel import Session
 
 from app.models.document import Document, DocumentStatus
 
+from app.core.rabbitmq import RabbitMQClient
+
 class DocumentService:
 
     def __init__(
@@ -135,6 +137,24 @@ class DocumentService:
         if workspace.exists():
 
             shutil.rmtree(workspace)
+
+    def queue_document(
+    self,
+    document: Document,
+        ) -> None:
+
+        document.status = DocumentStatus.queued
+
+        self.session.add(document)
+
+        self.session.commit()
+
+        client = RabbitMQClient()
+
+        try:
+            client.publish_document(document.id)
+        finally:
+            client.close()
 
 
     

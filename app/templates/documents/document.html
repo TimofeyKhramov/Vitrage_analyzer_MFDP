@@ -45,6 +45,20 @@
 
 </table>
 
+<td>
+    {% if document.status.value == "queued" %}
+        В очереди
+    {% elif document.status.value == "processing" %}
+        Обработка
+    {% elif document.status.value == "completed" %}
+        Завершено
+    {% elif document.status.value == "failed" %}
+        Ошибка
+    {% else %}
+        Загружен
+    {% endif %}
+</td>
+
 <a
     href="/documents/form"
     class="upload-button"

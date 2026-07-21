@@ -84,6 +84,9 @@ async def upload_document(
             pages=pages,
             max_page=document.pages,
         )
+
+        service.queue_document(document)
+        
     except ValueError as e:
 
         service.delete_document(document)
