@@ -104,7 +104,7 @@ class DocumentService:
         self.session.refresh(document)
 
         workspace = self.create_workspace(document.id)
-
+        file.file.seek(0)
         pdf_path = self.save_pdf(
             workspace,
             file,
@@ -113,6 +113,17 @@ class DocumentService:
         temp_path.unlink()
 
         return document, pdf_path
+    
+    def delete_document(
+            self,
+            document: Document,
+        ) -> None:
+
+            self.remove_workspace(document.id)
+
+            self.session.delete(document)
+
+            self.session.commit()
 
     def remove_workspace(
     self,

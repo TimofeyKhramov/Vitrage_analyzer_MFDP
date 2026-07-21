@@ -1,5 +1,7 @@
-from fastapi import APIRouter, Depends, Request
-
+from pathlib import Path
+from app.services.page_range_parser import PageRangeParser
+from fastapi import APIRouter, Depends, File, Form, Request, HTTPException, status, UploadFile
+from fastapi.responses import RedirectResponse
 from app.models.user import User
 from app.routes.deps import get_current_user
 from app.templates.jinja import templates
@@ -8,10 +10,10 @@ from app.core.database import get_session
 from app.models.document import Document
 from uuid import UUID
 from sqlmodel import select, Session
-from fastapi.responses import RedirectResponse
+import logging
 
+logger = logging.getLogger(__name__)
 documents_router = APIRouter(prefix="/documents")
-
 
 @documents_router.get("/upload")
 async def upload_page(
@@ -26,20 +28,6 @@ async def upload_page(
             "container_class": "card card-upload"
         },
     )
-
-from pathlib import Path
-
-from fastapi import (
-    APIRouter,
-    Depends,
-    File,
-    Form,
-    HTTPException,
-    Request,
-    UploadFile,
-    status,
-)
-
 
 documents_router = APIRouter(
     prefix="/documents",
@@ -70,6 +58,7 @@ async def upload_document(
     session: Session = Depends(get_session),
     current_user: User = Depends(get_current_user),
 ):
+    print(0)
     if file.content_type != "application/pdf":
         return templates.TemplateResponse(
             "upload.html",
@@ -81,15 +70,35 @@ async def upload_document(
             },
             status_code=status.HTTP_400_BAD_REQUEST,
         )
-
+    print(1)
     service = DocumentService(session)
-
-    document, _ = service.create_document(
+    print(2)
+    document, pdf_path = service.create_document(
         user_id=current_user.id,
         file=file,
         requested_pages=pages,
     )
+    logger.info(3)
+    try:
+        selected_pages = PageRangeParser.parse(
+            pages=pages,
+            max_page=document.pages,
+        )
+    except ValueError as e:
 
+        service.delete_document(document)
+
+        return templates.TemplateResponse(
+            "upload.html",
+            {
+                "request": request,
+                "current_user": current_user,
+                "container_class": "card card-upload",
+                "error": str(e),
+            },
+            status_code=status.HTTP_400_BAD_REQUEST,
+        )
+    print(4)
     return RedirectResponse(
         url=f"/documents/{document.id}",
         status_code=status.HTTP_303_SEE_OTHER,
