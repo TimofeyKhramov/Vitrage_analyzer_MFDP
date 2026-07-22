@@ -81,11 +81,16 @@ async def upload_document(
     logger.info(3)
     try:
         selected_pages = PageRangeParser.parse(
-            pages=pages,
-            max_page=document.pages,
+        pages=pages,
+        max_page=document.pages,
+    )
+
+        service.queue_document(
+            document=document,
+            selected_pages=selected_pages,
         )
 
-        service.queue_document(document)
+  
         
     except ValueError as e:
 
@@ -128,4 +133,73 @@ async def document_page(
             "document": document,
             "container_class": "card card-upload",
         },
+    )
+
+@documents_router.get("")
+async def documents_page(
+    request: Request,
+    session: Session = Depends(get_session),
+    current_user: User = Depends(get_current_user),
+):
+    service = DocumentService(session)
+
+    documents = service.get_user_documents(
+        current_user.id,
+    )
+
+    return templates.TemplateResponse(
+        "documents/index.html",
+        {
+            "request": request,
+            "documents": documents,
+            "current_user": current_user,
+            "container_class": "card card-wide",
+        },
+    )
+
+@documents_router.get("/{document_id}/info")
+async def document_info_page(
+    document_id: UUID,
+    request: Request,
+    session: Session = Depends(get_session),
+    current_user: User = Depends(get_current_user),
+):
+    service = DocumentService(session)
+
+    document = service.get_document(document_id)
+
+    if document is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Document not found",
+        )
+
+    pages = service.get_document_results(
+        document_id,
+    )
+
+    return templates.TemplateResponse(
+        "documents/detail.html",
+        {
+            "request": request,
+            "document": document,
+            "pages": pages,
+            "container_class": "card card-wide",
+        },
+    )
+
+
+@documents_router.get("/{document_id}/excel")
+async def download_excel(
+    document_id: UUID,
+    session: Session = Depends(get_session),
+    current_user: User = Depends(get_current_user),
+):
+
+    service = DocumentService(
+        session,
+    )
+
+    return service.download_excel(
+        document_id,
     )

@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ document.source_filename }}
+{% endblock %}
+
+{% block content %}
+
+<div class="detail-page">
+
+    <div class="detail-header">
+
+        <h1>
+            {{ document.source_filename }}
+        </h1>
+
+        <div class="detail-actions">
+
+            <a
+                href="/documents/{{ document.id }}/excel"
+                class="excel-download-button"
+            >
+                Скачать Excel
+            </a>
+
+        </div>
+
+    </div>
+
+    
+
+    <div class="detail-meta">
+
+        <div class="detail-meta-card">
+
+            <div class="detail-meta-title">
+                Статус
+            </div>
+
+            <div class="detail-meta-value">
+                {{ document.status.value }}
+            </div>
+
+        </div>
+
+        <div class="detail-meta-card">
+
+            <div class="detail-meta-title">
+                Дата создания
+            </div>
+
+            <div class="detail-meta-value">
+
+                {% if document.uploaded_at %}
+                    {{ document.uploaded_at.strftime("%d.%m.%Y %H:%M") }}
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% if pages %}
+
+    <div class="detail-table-wrapper">
+
+        <table class="detail-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>Страница</th>
+                    <th>№</th>
+                    <th>Наименование</th>
+                    <th>Количество</th>
+                    <th>Ширина</th>
+                    <th>Высота</th>
+                    <th>Дверей</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for page in pages %}
+                    {% for drawing in page.drawings %}
+
+                    <tr>
+
+                        <td>{{ page.page }}</td>
+
+                        <td>{{ drawing.drawing_number }}</td>
+
+                        <td class="detail-name">
+                            {{ drawing.name }}
+                        </td>
+
+                        <td>{{ drawing.amount }}</td>
+
+                        <td>{{ drawing.width }}</td>
+
+                        <td>{{ drawing.height }}</td>
+
+                        <td>{{ drawing.doors_count }}</td>
+
+                    </tr>
+
+                    {% endfor %}
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    {% else %}
+
+    <div class="empty-state">
+
+        <div class="empty-icon">
+            ⏳
+        </div>
+
+        <h2>
+            Документ обрабатывается
+        </h2>
+
+        <p>
+            После завершения анализа результаты автоматически появятся в таблице.
+        </p>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

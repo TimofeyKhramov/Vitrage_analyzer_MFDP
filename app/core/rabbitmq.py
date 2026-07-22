@@ -33,11 +33,13 @@ class RabbitMQClient:
     def publish_document(
         self,
         document_id: UUID,
+        selected_pages: list[int],
     ) -> None:
 
         body = json.dumps(
             {
                 "document_id": str(document_id),
+                "selected_pages": selected_pages,
             }
         )
 

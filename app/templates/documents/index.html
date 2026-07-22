@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}
+База данных
+{% endblock %}
+
+{% block content %}
+
+<div class="documents-page">
+
+    <div class="documents-header">
+
+        <div>
+
+            <h1>База данных</h1>
+
+            <p>
+                Загруженные документы и результаты анализа
+            </p>
+
+        </div>
+
+        <a
+            href="/documents/form"
+            class="upload-link"
+        >
+            + Загрузить документ
+        </a>
+
+    </div>
+
+    {% if documents %}
+
+        <div class="documents-grid">
+
+            {% for document in documents %}
+
+            <a
+                href="/documents/{{ document.id }}/info"
+                class="document-card"
+            >
+
+                <div class="document-card-header">
+
+                    <h2>{{ document.source_filename }}</h2>
+
+                    <span class="status status-{{ document.status.value }}">
+                        {{ document.status.value }}
+                    </span>
+
+                </div>
+
+                <div class="document-card-body">
+
+                    <div class="document-info">
+
+                        <span>Страниц</span>
+
+                        <strong>{{ document.pages }}</strong>
+
+                    </div>
+
+                    <div class="document-info">
+
+                        <span>Дата</span>
+
+                        <strong>
+
+                            {% if document.created_at %}
+                                {{ document.created_at.strftime("%d.%m.%Y %H:%M") }}
+                            {% endif %}
+
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="empty-state">
+
+            <div class="empty-icon">
+                📄
+            </div>
+
+            <h2>
+                Документы отсутствуют
+            </h2>
+
+            <p>
+                Загрузите первый PDF-документ для анализа.
+            </p>
+
+            <a
+                href="/documents/form"
+                class="upload-button"
+            >
+                Загрузить документ
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
