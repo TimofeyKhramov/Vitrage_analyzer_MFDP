@@ -60,7 +60,7 @@ PostgreSQL --> Excel[Excel Download]
 ## 2.1 Клонирование репозитория
 
 ```bash
-git clone https://github.com/<username>/vitrage-analyzer.git
+git clone https://github.com/TimofeyKhramov/Vitrage_analyzer_MFDP.git
 cd vitrage-analyzer
 ```
 
