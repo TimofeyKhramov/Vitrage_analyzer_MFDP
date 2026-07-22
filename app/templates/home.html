@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}
+Vitrage Analyzer
+{% endblock %}
+
+{% block content %}
+
+<div class="home-page">
+    <header class="landing-header">
+
+    <img
+        src="{{ url_for('static', path='images/logoGKT.svg') }}"
+        alt="GKT"
+        class="landing-logo"
+    >
+
+</header>
+
+    <div class="home-background">
+        <span></span>
+        <span></span>
+    </div>
+
+    <div class="home-content">
+
+        <h1 class="home-title">
+            Vitrage Analyzer
+        </h1>
+
+        <p class="home-description">
+            Автоматизированный анализ проектной документации
+            витражных конструкций с использованием
+            компьютерного зрения и искусственного интеллекта.
+        </p>
+
+        <a
+            href="/auth/login"
+            class="home-button"
+        >
+            Начать работу
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

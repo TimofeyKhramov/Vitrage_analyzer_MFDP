@@ -10,6 +10,10 @@ templates = Jinja2Templates(directory="app/templates")
 @home_route.get("/", response_class=HTMLResponse)
 async def index(request: Request):
     return templates.TemplateResponse(
-        request=request,
-        name="base.html",
+        "home.html",
+        {
+            "request": request,
+            "full_page": True,
+            "body_class": "landing-body",
+        },
     )
