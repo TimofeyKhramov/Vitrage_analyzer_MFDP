@@ -8,6 +8,7 @@
 
 <div class="documents-page">
 
+
     <div class="documents-header">
 
         <div>
@@ -66,8 +67,8 @@
 
                         <strong>
 
-                            {% if document.created_at %}
-                                {{ document.created_at.strftime("%d.%m.%Y %H:%M") }}
+                            {% if document.uploaded_at %}
+                                {{ document.uploaded_at.strftime("%d.%m.%Y %H:%M") }}
                             {% endif %}
 
                         </strong>

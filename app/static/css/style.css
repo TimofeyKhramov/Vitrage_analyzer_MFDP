@@ -6,7 +6,7 @@
 
 body{
     font-family:Arial, Helvetica, sans-serif;
-    background:#f5f7fa;
+    background:#e6e9ed;
     display:flex;
     justify-content:center;
     align-items:center;
@@ -20,7 +20,7 @@ body{
 }
 
 .card{
-    background:white;
+    background:rgb(238, 234, 234);
     border-radius:16px;
     padding:40px;
     box-shadow:0 10px 25px rgba(0,0,0,.08);
@@ -129,6 +129,7 @@ button:hover{
 }
 
 .upload-header{
+    position: relative;
     text-align:center;
     margin-bottom:35px;
     min-width:500px;
@@ -225,16 +226,36 @@ button:hover{
     padding:16px;
     border:none;
     border-radius:10px;
-    background:#2563eb;
-    color:white;
+    background:#bbe0c4;
+    color:#ffffff;
     font-size:17px;
     font-weight:600;
     cursor:pointer;
     transition:.2s;
 }
 
-.upload-button:hover{
-    background:#1d4ed8;
+.to-data-button {
+    display: inline-block;
+    padding: 18px 36px;
+    font-size: 20px;
+    font-weight: 600;
+    border-radius: 12px;
+
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+    text-decoration: none;
+
+    transition: .2s;
+}
+
+.to-data-button2 {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.to-data-button:hover {
+    background: linear-gradient(135deg, #7b51be 0%, #a663ea 100%);
 }
 
 
@@ -297,18 +318,18 @@ button:hover{
 }
 
 .upload-link{
-    background:#2563eb;
+    background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
     color:#fff;
     text-decoration:none;
     padding:14px 26px;
-    border-radius:12px;
+    border-radius:120px;
     font-weight:600;
     transition:.2s;
     white-space:nowrap;
 }
 
 .upload-link:hover{
-    background:#1d4ed8;
+    background:#5a5b5f;
 }
 
 .documents-grid{
@@ -344,20 +365,6 @@ button:hover{
     font-size:16px;
 }
 
-.upload-link{
-    background:#2563eb;
-    color:#fff;
-    text-decoration:none;
-    padding:14px 26px;
-    border-radius:12px;
-    font-weight:600;
-    transition:.2s;
-    white-space:nowrap;
-}
-
-.upload-link:hover{
-    background:#1d4ed8;
-}
 
 .documents-grid{
     display:grid;
@@ -710,47 +717,91 @@ Home page */
     transform:translateY(-2px);
 
 }
+.home-background span {
+    position: absolute;
+    opacity: 0.85;
+    animation: float 12s infinite ease-in-out;
 
-.home-background span{
+    border-radius: 8px;
+    backdrop-filter: blur(4px);
 
-    position:absolute;
+    background: linear-gradient(
+        135deg,
+        #4f8df8,
+        #79afff,
+        #d8ecff,
+        #79afff,
+        #4f8df8
+    );
 
-    border-radius:50%;
+    background-size: 250% 250%;
 
-    opacity:.15;
+    animation:
+        glassFlow 8s ease-in-out infinite,
+        float 12s ease-in-out infinite;
 
-    animation:float 12s infinite ease-in-out;
+    border: 1px solid rgba(255,255,255,.2);
 
+    box-shadow:
+        0 0 20px rgba(255,255,255,.15),
+        inset 0 0 20px rgba(255,255,255,.08);
 }
 
-.home-background span:first-child{
-
-    width:420px;
-
-    height:420px;
-
-    background:#2563eb;
-
-    left:-120px;
-
-    top:-100px;
-
+@keyframes glassFlow {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
-.home-background span:last-child{
 
-    width:340px;
+.home-background span:nth-child(1){
+    width:220px;
+    height:520px;
 
-    height:340px;
+    left:-80px;
+    top:-120px;
 
-    background:#22c55e;
+    transform:rotate(-18deg);
+}
+
+.home-background span:nth-child(2){
+    width:220px;
+    height:520px;
 
     right:-80px;
+    bottom:-120px;
 
-    bottom:-80px;
+    transform:rotate(18deg);
+}
 
-    animation-delay:5s;
+.home-background span:nth-child(3){
+    width:260px;
+    height:140px;
+    right:120px;
+    top:80px;
+    transform:rotate(-30deg);
+}
 
+.home-background span:nth-child(4){
+    width:150px;
+    height:350px;
+    right:-30px;
+    bottom:20px;
+    transform:rotate(18deg);
+}
+
+.home-background span:nth-child(5){
+    width:220px;
+    height:220px;
+    left:45%;
+    bottom:-100px;
+    transform:rotate(45deg);
 }
 
 .landing-header{
@@ -839,4 +890,3 @@ Home page */
     }
 
 }
-

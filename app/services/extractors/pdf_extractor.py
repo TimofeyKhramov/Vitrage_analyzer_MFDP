@@ -7,6 +7,8 @@ from pathlib import Path
 from app.services.storage_service import StorageService
 from app.models.document import Document    
 
+from app.services.ocr_client import OCRClient
+
 
 class PdfExtractor:
 
@@ -15,12 +17,14 @@ class PdfExtractor:
         model_doors_path: str,
         document: Document,
         page_number: int,
+        client: OCRClient
     ):
 
         self.model_doors = YOLO(model_doors_path)
 
         self.document = document
         self.page_number = page_number
+        self.ocr_client = client
 
         self.pdf_path = StorageService.get_pdf_path(
             document,
@@ -227,112 +231,169 @@ class PdfExtractor:
                     "words",
                     clip=drawing_rect,
                 )
-            ) < 5:
-                continue
+            ) >= 5:
+                
 
-            width = self.get_max_horizontal_number(
-                value["drawing"],
-            )
-
-            height = self.get_max_vertical_number(
-                value["drawing"],
-            )
-
-            crop, scale = PdfCropper.crop_pdf_to_jpg(
-                page=self.page,
-                bbox=value["drawing"],
-            )
-
-            detections = self.model_doors(
-                crop,
-                conf=0.8,
-                verbose=False,
-            )
-
-            doors_amount = sum(
-                len(detection.boxes)
-                for detection in detections
-            )
-
-            doors_heights = []
-
-            for detection in detections:
-
-                for box in detection.boxes:
-
-                    x1, y1, x2, y2 = map(
-                        int,
-                        box.xyxy[0].tolist(),
-                    )
-
-                    pdf_box = [
-                        x1 / scale + value["drawing"][0],
-                        y1 / scale + value["drawing"][1],
-                        x2 / scale + value["drawing"][0],
-                        y2 / scale + value["drawing"][1],
-                    ]
-
-                    door_height = self.find_nearest_vertical_number(
-                        pdf_box,
-                    )
-
-                    doors_heights.append(
-                        door_height,
-                    )
-
-            name = None
-
-            amount = None
-
-            if value["amount"]:
-
-                amount = self.page.get_text(
-                    clip=fitz.Rect(
-                        value["amount"],
-                    )
-                ).strip()
-
-                blocks = self.page.get_text(
-                    "blocks",
-                    clip=fitz.Rect(
-                        value["name"],
-                    ),
+                width = self.get_max_horizontal_number(
+                    value["drawing"],
                 )
 
-                if blocks and len(blocks[0]) > 4:
-
-                    name = NameAmountExtractor.extract_name(
-                        blocks[0][4],
-                    )
-
-            elif value["name"]:
-
-                blocks = self.page.get_text(
-                    "blocks",
-                    clip=fitz.Rect(
-                        value["name"],
-                    ),
+                height = self.get_max_vertical_number(
+                    value["drawing"],
                 )
 
-                if blocks and len(blocks[0]) > 4:
+                crop, scale = PdfCropper.crop_pdf_to_jpg(
+                    page=self.page,
+                    bbox=value["drawing"],
+                )
 
-                    name = NameAmountExtractor.extract_name(
-                        blocks[0][4],
+                detections = self.model_doors(
+                    crop,
+                    conf=0.8,
+                    verbose=False,
+                )
+
+                doors_amount = sum(
+                    len(detection.boxes)
+                    for detection in detections
+                )
+
+                doors_heights = []
+
+                for detection in detections:
+
+                    for box in detection.boxes:
+
+                        x1, y1, x2, y2 = map(
+                            int,
+                            box.xyxy[0].tolist(),
+                        )
+
+                        pdf_box = [
+                            x1 / scale + value["drawing"][0],
+                            y1 / scale + value["drawing"][1],
+                            x2 / scale + value["drawing"][0],
+                            y2 / scale + value["drawing"][1],
+                        ]
+
+                        door_height = self.find_nearest_vertical_number(
+                            pdf_box,
+                        )
+
+                        doors_heights.append(
+                            door_height,
+                        )
+
+                name = None
+
+                amount = None
+
+                if value["amount"]:
+
+                    amount = self.page.get_text(
+                        clip=fitz.Rect(
+                            value["amount"],
+                        )
+                    ).strip()
+
+                    blocks = self.page.get_text(
+                        "blocks",
+                        clip=fitz.Rect(
+                            value["name"],
+                        ),
                     )
 
-                    amount = NameAmountExtractor.extract_quantity_advanced(
-                        blocks[0][4],
+                    if blocks and len(blocks[0]) > 4:
+
+                        name = NameAmountExtractor.extract_name(
+                            blocks[0][4],
+                        )
+
+                elif value["name"]:
+
+                    blocks = self.page.get_text(
+                        "blocks",
+                        clip=fitz.Rect(
+                            value["name"],
+                        ),
                     )
 
-            data_dict["drawings"].append(
-                {
-                    "name": name,
-                    "amount": amount,
-                    "width": width,
-                    "height": height,
-                    "doors_amount": doors_amount,
-                    "doors_height": doors_heights,
-                }
-            )
+                    if blocks and len(blocks[0]) > 4:
+
+                        name = NameAmountExtractor.extract_name(
+                            blocks[0][4],
+                        )
+
+                        amount = NameAmountExtractor.extract_quantity_advanced(
+                            blocks[0][4],
+                        )
+
+                data_dict["drawings"].append(
+                    {
+                        "name": name,
+                        "amount": amount,
+                        "width": width,
+                        "height": height,
+                        "doors_amount": doors_amount,
+                        "doors_height": doors_heights,
+                    }
+                )
+
+            else:
+                area_drawing, scale = PdfCropper.crop_pdf_to_jpg(
+                    page=self.page,
+                    bbox=value["drawing"],
+                )
+                width, height = self.ocr_client.extract_drawing(area_drawing)
+            
+                detections = self.model_doors(
+                                    area_drawing,
+                                    conf=0.8,
+                                    verbose=False,
+                                )
+                
+                doors_amount = sum(
+                    len(detection.boxes)
+                    for detection in detections
+                )
+
+                doors_heights = []
+
+                name_clear, amount = None, None
+                if value["amount"]:
+                    area_amount, scale = PdfCropper.crop_pdf_to_jpg(
+                    page=self.page,
+                    bbox=value["amount"],
+                )
+                    amount = self.ocr_client.extract_amount(area_amount)
+                    area_name, scale = PdfCropper.crop_pdf_to_jpg(
+                    page=self.page,
+                    bbox=value["name"],
+                )
+                    name = self.ocr_client.extract_name(area_name)
+                    name_clear = NameAmountExtractor.extract_name(name)
+                else:
+                    if value["name"]:
+
+                        area_name, scale = PdfCropper.crop_pdf_to_jpg(
+                                                    page=self.page,
+                                                    bbox=value["name"],
+                                                )
+
+                        name = self.ocr_client.extract_name(area_name)
+
+                        name_clear = NameAmountExtractor.extract_name(name)
+                        amount = NameAmountExtractor.extract_quantity_advanced(name)
+
+                data_dict["drawings"].append(
+                                                {
+                                                    "name": name_clear,
+                                                    "amount": amount,
+                                                    "width": width,
+                                                    "height": height,
+                                                    "doors_amount": doors_amount,
+                                                    "doors_height": doors_heights,
+                                                }
+                                            )
 
         return data_dict

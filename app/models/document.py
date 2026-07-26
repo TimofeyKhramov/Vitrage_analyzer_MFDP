@@ -33,6 +33,8 @@ class Document(SQLModel, table=True):
 
     status: DocumentStatus = Field(default=DocumentStatus.uploaded)
 
+    total_square: float = Field(default=0.0)
+
     uploaded_at: datetime = Field(default_factory=datetime.utcnow)
 
     user_id: UUID = Field(foreign_key="users.id", ondelete="CASCADE")

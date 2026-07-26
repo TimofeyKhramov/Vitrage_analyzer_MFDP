@@ -19,6 +19,8 @@ class ResultService:
         results: list[dict],
     ) -> None:
 
+        square = 0.0
+
         for page_result in results:
 
             page_number = page_result["page"]
@@ -51,4 +53,13 @@ class ResultService:
                     analysis_result,
                 )
 
+                quantity = drawing_data["amount"] or 0
+                square += (
+                    drawing_data["width"]
+                    * drawing_data["height"]
+                    * quantity
+                )
+
+        document.total_square = square
+        self.session.add(document)
         self.session.commit()

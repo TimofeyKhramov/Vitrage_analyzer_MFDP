@@ -45,5 +45,7 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
+    ocr_url: str = "http://192.168.1.128:8080/"
+
 
 settings = Settings()

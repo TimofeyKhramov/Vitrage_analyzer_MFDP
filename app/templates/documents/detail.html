@@ -7,7 +7,7 @@
 {% block content %}
 
 <div class="detail-page">
-
+   
     <div class="detail-header">
 
         <h1>
@@ -55,6 +55,18 @@
                     {{ document.uploaded_at.strftime("%d.%m.%Y %H:%M") }}
                 {% endif %}
 
+            </div>
+
+        </div>
+
+        <div class="detail-meta-card">
+
+            <div class="detail-meta-title">
+                Общая площадь
+            </div>
+
+            <div class="detail-meta-value">
+                {{ document.total_square | round(2) }}
             </div>
 
         </div>

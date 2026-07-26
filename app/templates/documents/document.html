@@ -7,13 +7,9 @@
 {% block content %}
 
 <div class="upload-header">
-
+     
     <h1>{{ document.source_filename }}</h1>
-
-    <p>
-        Информация о документе
-    </p>
-
+    <p>Информация о документе</p>
 </div>
 
 <table class="document-table">
@@ -35,7 +31,19 @@
 
     <tr>
         <td>Статус</td>
-        <td>{{ document.status.value }}</td>
+        <td id="document-status">
+            {% if document.status.value == "queued" %}
+                В очереди
+            {% elif document.status.value == "processing" %}
+                Обработка
+            {% elif document.status.value == "completed" %}
+                Завершено
+            {% elif document.status.value == "failed" %}
+                Ошибка
+            {% else %}
+                Загружен
+            {% endif %}
+        </td>
     </tr>
 
     <tr>
@@ -45,26 +53,51 @@
 
 </table>
 
-<td>
-    {% if document.status.value == "queued" %}
-        В очереди
-    {% elif document.status.value == "processing" %}
-        Обработка
-    {% elif document.status.value == "completed" %}
-        Завершено
-    {% elif document.status.value == "failed" %}
-        Ошибка
-    {% else %}
-        Загружен
-    {% endif %}
-</td>
-
 <a
     href="/documents/form"
     class="upload-button"
-    style="display:block;text-align:center;text-decoration:none;margin-top:30px;"
+    style="display:block;text-align:center;text-decoration:none;margin-top:30px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);"
 >
     Загрузить ещё документ
 </a>
+
+<script>
+const documentId = "{{ document.id }}";
+
+const statusMap = {
+    queued: "В очереди",
+    processing: "Обработка",
+    completed: "Завершено",
+    failed: "Ошибка",
+    uploaded: "Загружен"
+};
+
+async function updateStatus() {
+    try {
+        const response = await fetch(`/documents/${documentId}/status`);
+
+        if (!response.ok) {
+            throw new Error("Ошибка получения статуса");
+        }
+
+        const data = await response.json();
+
+        document.getElementById("document-status").textContent =
+            statusMap[data.status] || data.status;
+
+        if (data.status === "completed" || data.status === "failed") {
+            clearInterval(timer);
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+// Первый запрос сразу после открытия страницы
+updateStatus();
+
+// Далее каждые 3 секунды
+const timer = setInterval(updateStatus, 3000);
+</script>
 
 {% endblock %}

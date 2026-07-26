@@ -1,6 +1,6 @@
 from uuid import UUID, uuid4
 from sqlmodel import Field, Relationship, SQLModel
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 
 if TYPE_CHECKING:
@@ -12,9 +12,9 @@ class AnalysisResult(SQLModel, table=True):
 
     id: UUID = Field(default_factory=uuid4, primary_key=True)
 
-    name: str
+    name: Optional[str] = Field(default=None)
 
-    quantity: int
+    quantity: Optional[int] = Field(default=None)
 
     width: float
 

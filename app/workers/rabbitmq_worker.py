@@ -10,11 +10,13 @@ from app.core.database import engine
 from app.models.document import Document, DocumentStatus
 from app.services.analysis_service import AnalysisService
 from app.services.result_service import ResultService
+from app.services.ocr_client import OCRClient
 
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+ocr_client = None
 
 def callback(ch, method, properties, body):
 
@@ -48,7 +50,9 @@ def callback(ch, method, properties, body):
         session.add(document)
         session.commit()
 
+        ocr_client = None
         try:
+            ocr_client = OCRClient(settings.ocr_url)
             if selected_pages is None:
                 logger.warning(
                     "No selected_pages provided in message for document %s; processing all pages.",
@@ -65,6 +69,7 @@ def callback(ch, method, properties, body):
                 page_result = service.process_page(
                     document=document,
                     page_number=page_number,
+                    client=ocr_client
                 )
 
                 document_result.append(
@@ -92,6 +97,8 @@ def callback(ch, method, properties, body):
             document.status = DocumentStatus.failed
 
         finally:
+            if ocr_client is not None:
+                ocr_client.close()
 
             session.add(document)
             session.commit()

@@ -6,6 +6,8 @@ from app.services.detectors.detector import DrawingDetector, DrawingAnalyzer
 from app.services.pdf.splitter import PDFSplitter
 from app.services.storage_service import StorageService
 from app.services.extractors.pdf_extractor import PdfExtractor
+from app.services.ocr_client import OCRClient
+
 
 class AnalysisService:
 
@@ -19,6 +21,7 @@ class AnalysisService:
         self,
         document: Document,
         page_number: int,
+        client: OCRClient
     ):
 
         pdf_path = StorageService.get_pdf_path(
@@ -50,11 +53,13 @@ class AnalysisService:
             model_doors_path=settings.doors_model_path,
             document=document,
             page_number=page_number,
+            client=client
         )
 
         try:
             result_dict = extractor.extract_params(detection_dict)
         finally:
             extractor.close()
+            
 
         return result_dict

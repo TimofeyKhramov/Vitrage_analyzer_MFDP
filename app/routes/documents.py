@@ -203,3 +203,12 @@ async def download_excel(
     return service.download_excel(
         document_id,
     )
+
+@documents_router.get("/{document_id}/status")
+async def get_document_status(document_id: UUID, session: Session = Depends(get_session),):
+    service = DocumentService(session)
+    document = service.get_document(document_id)
+
+    return {
+        "status": document.status.value
+    }
