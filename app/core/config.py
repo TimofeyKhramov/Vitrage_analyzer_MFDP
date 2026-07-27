@@ -32,7 +32,7 @@ class Settings(BaseSettings):
 
     models_dir: Path = project_dir / "app" / "core" / "models_yolo"
 
-    drawings_model_path: Path = models_dir / "no_generate_data640.pt"
+    drawings_model_path: Path = models_dir / "model_drawings.pt"
 
     doors_model_path: Path = models_dir / "doors_otr.pt"
 
@@ -45,7 +45,8 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    ocr_url: str = "http://192.168.1.128:8080/"
+    # ocr_url: str = "http://192.168.1.128:8080/"
+    ocr_url: str = "http://ocr:8080"
 
 
 settings = Settings()

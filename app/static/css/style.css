@@ -220,6 +220,31 @@ button:hover{
     color:#64748b;
 }
 
+.back-button{
+    position:absolute;
+    top:24px;
+    left:24px;
+
+    display:inline-block;
+
+    padding:12px 24px;
+
+    background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+    color:#fff;
+
+    text-decoration:none;
+    font-weight:600;
+    font-size:16px;
+
+    border-radius:12px;
+
+    transition:.2s;
+}
+
+.back-button:hover{
+    background:linear-gradient(135deg,#7b51be 0%,#a663ea 100%);
+}
+
 .upload-button{
     width:100%;
     margin-top:35px;
@@ -232,6 +257,10 @@ button:hover{
     font-weight:600;
     cursor:pointer;
     transition:.2s;
+}
+
+.upload-button:hover{
+    background:linear-gradient(135deg,#7b51be 0%,#a663ea 100%);
 }
 
 .to-data-button {
@@ -294,7 +323,10 @@ button:hover{
 }
 
 .documents-page{
-    width:100%;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    overflow-x: hidden;
 }
 
 .documents-header{
@@ -329,7 +361,7 @@ button:hover{
 }
 
 .upload-link:hover{
-    background:#5a5b5f;
+    background:linear-gradient(135deg,#7b51be 0%,#a663ea 100%);
 }
 
 .documents-grid{
@@ -472,8 +504,11 @@ button:hover{
    Document Detail
 =========================== */
 
-.detail-page{
-    width:100%;
+.detail-page {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    overflow-x: hidden;
 }
 
 .detail-header{
@@ -533,12 +568,16 @@ button:hover{
 
 .detail-meta-title{
     color:#6B7280;
-    font-size:14px;
+    font-size:17px;
     margin-bottom:8px;
 }
 
 .detail-meta-value{
-    font-size:18px;
+    font-size:17px;
+}
+
+.detail-meta-square{
+     font-size:18px;
     font-weight:600;
 }
 
@@ -547,11 +586,13 @@ button:hover{
     background:#ffffff;
     border-radius:16px;
     box-shadow:0 6px 22px rgba(0,0,0,.06);
+    text-align: center;
 }
 
 .detail-table{
     width:100%;
     border-collapse:collapse;
+    text-align: center;
 }
 
 .detail-table thead{

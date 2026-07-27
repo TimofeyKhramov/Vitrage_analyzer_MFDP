@@ -62,8 +62,8 @@ class OcrService:
         self,
         crop,
         result: dict,
-        score_threshold: float = 0.8,
-        angle_threshold: float = 15,
+        score_threshold: float = 0.9,
+        angle_threshold: float = 30,
     ):
 
         H, W = crop.shape[:2]
@@ -93,6 +93,14 @@ class OcrService:
             if angle > angle_threshold:
                 continue
 
+            # Нормализованные размеры бокса
+            box_width = (poly[:, 0].max() - poly[:, 0].min()) / W
+            box_height = (poly[:, 1].max() - poly[:, 1].min()) / H
+
+            # Бокс должен быть более вытянут по горизонтали
+            if box_width <= box_height:
+                continue
+
             cx, cy = self._box_center(poly)
 
             candidates.append(
@@ -106,24 +114,9 @@ class OcrService:
         if not candidates:
             return None
 
-        row_eps = H * 0.03
-
-        top_y = min(
-            c["y"] for c in candidates
-        )
-
-        top_row = [
-            c
-            for c in candidates
-            if abs(c["y"] - top_y) <= row_eps
-        ]
-
-        if not top_row:
-            return None
-
         return max(
             c["value"]
-            for c in top_row
+            for c in candidates
         )
 
     def extract_drawing(
@@ -139,13 +132,26 @@ class OcrService:
                 raise ValueError(
                     "Failed to decode image."
                 )
+            padding = 50
+            
+            img_pad = cv2.copyMakeBorder(
+                img,
+                top=padding,
+                bottom=padding,
+                left=padding,
+                right=padding,
+                borderType=cv2.BORDER_CONSTANT,
+                value=(255, 255, 255),  # белый фон
+            )
 
             result = self.ocr.predict(
-                img,
+                img_pad,
                 use_textline_orientation=False,
                 return_word_box=False,
                 use_doc_orientation_classify=False,
             )
+            # print(result[0]["rec_texts"])
+            # print(result[0]["rec_scores"])
 
             width = self.extract_max_horizontal_size(
                 img,
@@ -156,13 +162,27 @@ class OcrService:
                 img,
                 cv2.ROTATE_90_CLOCKWISE,
             )
+            padding = 50
+
+            img_rot_pad = cv2.copyMakeBorder(
+                img_rot,
+                top=padding,
+                bottom=padding,
+                left=padding,
+                right=padding,
+                borderType=cv2.BORDER_CONSTANT,
+                value=(255, 255, 255),  # белый фон
+            )
+            cv2.imwrite('border.png', img_rot_pad)
 
             result = self.ocr.predict(
-                img_rot,
+                img_rot_pad,
                 use_textline_orientation=True,
                 return_word_box=False,
                 use_doc_orientation_classify=False,
             )
+            print(result[0]["rec_texts"])
+            print(result[0]["rec_scores"])
 
             height = self.extract_max_horizontal_size(
                 img_rot,

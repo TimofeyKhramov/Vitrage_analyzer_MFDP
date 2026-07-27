@@ -20,10 +20,8 @@ services:
       database:
         condition: service_healthy
 
-      # ocr:
-      #   condition: service_healthy
-      # rabbitmq:
-      #   condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
 
     healthcheck:
       test:
@@ -63,8 +61,8 @@ services:
       rabbitmq:
         condition: service_healthy
 
-      # ocr:
-      #   condition: service_healthy
+      ocr:
+        condition: service_healthy
 
     networks:
       - vitrage-network
@@ -127,34 +125,37 @@ services:
     networks:
       - vitrage-network
 
-  # ocr:
-  #   build:
-  #     context: ./ocr_service
+  ocr:
+    build:
+      context: ./ocr_service
 
-  #   image: vitrage-ocr:latest
-  #   container_name: vitrage-ocr
+    image: vitrage-ocr:latest
+    container_name: vitrage-ocr
 
-  #   restart: no
+    restart: unless-stopped
+
+    ports:
+      - "8080:8080"
 
 
-  #   volumes:
-  #     - ./ocr_service:/app
+    volumes:
+      - ./ocr_service:/app
 
-  #   # healthcheck:
-  #   #   test:
-  #   #     [
-  #   #       "CMD",
-  #   #       "python",
-  #   #       "-c",
-  #   #       "import urllib.request; urllib.request.urlopen('http://localhost:8000/docs')"
-  #   #     ]
-  #     # interval: 30s
-  #     # timeout: 10s
-  #     # retries: 3
-  #     # start_period: 20s
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://localhost:8080/health')"
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
 
-  #   networks:
-  #     - vitrage-network
+    networks:
+      - vitrage-network
 
 
 volumes:

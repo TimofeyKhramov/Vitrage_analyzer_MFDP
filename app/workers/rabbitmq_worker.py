@@ -23,20 +23,17 @@ def callback(ch, method, properties, body):
     message = json.loads(body)
 
     document_id = UUID(message["document_id"])
-
     selected_pages = message.get("selected_pages")
 
     with Session(engine) as session:
 
-        document = session.get(
-            Document,
-            document_id,
-        )
+        document = session.get(Document, document_id)
 
         if document is None:
 
             logger.error(
-                f"Document {document_id} not found."
+                "Document %s not found.",
+                document_id,
             )
 
             ch.basic_ack(
@@ -46,19 +43,27 @@ def callback(ch, method, properties, body):
             return
 
         document.status = DocumentStatus.processing
-
-        session.add(document)
         session.commit()
 
         ocr_client = None
+
         try:
+
             ocr_client = OCRClient(settings.ocr_url)
+
             if selected_pages is None:
+
                 logger.warning(
                     "No selected_pages provided in message for document %s; processing all pages.",
                     document.id,
                 )
-                selected_pages = list(range(1, document.pages + 1))
+
+                selected_pages = list(
+                    range(
+                        1,
+                        document.pages + 1,
+                    )
+                )
 
             service = AnalysisService(session)
 
@@ -69,7 +74,7 @@ def callback(ch, method, properties, body):
                 page_result = service.process_page(
                     document=document,
                     page_number=page_number,
-                    client=ocr_client
+                    client=ocr_client,
                 )
 
                 document_result.append(
@@ -79,29 +84,37 @@ def callback(ch, method, properties, body):
                     }
                 )
 
-            logger.info(document_result)
-
             ResultService(session).save_document_results(
-            document=document,
-            results=document_result,
-                 )
+                document=document,
+                results=document_result,
+            )
 
             document.status = DocumentStatus.completed
+            session.commit()
 
         except Exception:
 
+            session.rollback()
+
             logger.exception(
-                f"Failed to process document {document.id}"
+                "Failed to process document %s",
+                document.id,
             )
 
-            document.status = DocumentStatus.failed
+            document = session.get(
+                Document,
+                document.id,
+            )
+
+            if document is not None:
+
+                document.status = DocumentStatus.failed
+                session.commit()
 
         finally:
+
             if ocr_client is not None:
                 ocr_client.close()
-
-            session.add(document)
-            session.commit()
 
     ch.basic_ack(
         delivery_tag=method.delivery_tag,

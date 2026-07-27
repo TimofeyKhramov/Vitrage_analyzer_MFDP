@@ -340,9 +340,11 @@ class PdfExtractor:
                 )
 
             else:
+                ar = value["drawing"]
+                bbox = ar[0]-20, ar[1]-20, ar[2]+20, ar[3]+20
                 area_drawing, scale = PdfCropper.crop_pdf_to_jpg(
                     page=self.page,
-                    bbox=value["drawing"],
+                    bbox=bbox,
                 )
                 width, height = self.ocr_client.extract_drawing(area_drawing)
             

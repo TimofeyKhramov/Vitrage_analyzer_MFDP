@@ -20,6 +20,7 @@ class ResultService:
     ) -> None:
 
         square = 0.0
+        doors_amount = 0
 
         for page_result in results:
 
@@ -59,7 +60,9 @@ class ResultService:
                     * drawing_data["height"]
                     * quantity
                 )
+                doors_amount += drawing_data["doors_amount"]
 
         document.total_square = square
+        document.quantity_doors = doors_amount
         self.session.add(document)
         self.session.commit()

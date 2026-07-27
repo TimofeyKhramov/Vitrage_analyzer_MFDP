@@ -35,6 +35,8 @@ class Document(SQLModel, table=True):
 
     total_square: float = Field(default=0.0)
 
+    quantity_doors: Optional[int] = Field(default=None)
+
     uploaded_at: datetime = Field(default_factory=datetime.utcnow)
 
     user_id: UUID = Field(foreign_key="users.id", ondelete="CASCADE")

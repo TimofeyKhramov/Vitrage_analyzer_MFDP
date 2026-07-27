@@ -6,7 +6,13 @@
 
 {% block content %}
 
+
+
 <div class="detail-page">
+    <a href="/documents" class="back-button">
+            ⬅ Назад
+    </a>
+    
    
     <div class="detail-header">
 
@@ -62,11 +68,23 @@
         <div class="detail-meta-card">
 
             <div class="detail-meta-title">
-                Общая площадь
+                Общая площадь, м²
             </div>
 
-            <div class="detail-meta-value">
-                {{ document.total_square | round(2) }}
+            <div class="detail-meta-square">
+                {{ document.total_square*10**-6  }}
+            </div>
+
+        </div>
+
+        <div class="detail-meta-card">
+
+            <div class="detail-meta-title">
+                Общее кол-во дверей, шт
+            </div>
+
+            <div class="detail-meta-square">
+                {{ document.quantity_doors  }}
             </div>
 
         </div>
@@ -77,19 +95,18 @@
 
     <div class="detail-table-wrapper">
 
-        <table class="detail-table">
+        <table class="detail-table style=text-align: center;">
 
             <thead>
 
                 <tr>
 
                     <th>Страница</th>
-                    <th>№</th>
                     <th>Наименование</th>
-                    <th>Количество</th>
-                    <th>Ширина</th>
-                    <th>Высота</th>
-                    <th>Дверей</th>
+                    <th>Количество, шт</th>
+                    <th>Ширина, мм</th>
+                    <th>Высота, мм</th>
+                    <th>Кол-во дверей, шт</th>
 
                 </tr>
 
@@ -104,9 +121,7 @@
 
                         <td>{{ page.page }}</td>
 
-                        <td>{{ drawing.drawing_number }}</td>
-
-                        <td class="detail-name">
+                        <td >
                             {{ drawing.name }}
                         </td>
 
