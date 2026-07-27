@@ -3,6 +3,53 @@ import re
 
 class NameAmountExtractor:
     @staticmethod
+    def replace_english_to_russian(text):
+        """
+        Заменяет английские буквы на визуально похожие русские
+
+        Args:
+            text: строка для преобразования
+
+        Returns:
+            str: строка с заменёнными буквами
+        """
+        # Словарь соответствия английских букв русским
+        replace_map = {
+            # Строчные буквы
+            'a': 'а',
+            'b': 'в',
+            'c': 'с',
+            'e': 'е',
+            'h': 'н',
+            'k': 'к',
+            'm': 'м',
+            'o': 'о',
+            'p': 'р',
+            't': 'т',
+            'x': 'х',
+            'y': 'у',
+            # Заглавные буквы
+            'A': 'А',
+            'B': 'В',
+            'C': 'С',
+            'E': 'Е',
+            'H': 'Н',
+            'K': 'К',
+            'M': 'М',
+            'O': 'О',
+            'P': 'Р',
+            'T': 'Т',
+            'X': 'Х',
+            'Y': 'У'
+        }
+
+        # Заменяем все буквы по словарю
+        result = ''
+        for char in text:
+            result += replace_map.get(char, char)
+
+        return result
+    @staticmethod
     def extract_name(text: str):
         """
         Извлекает наименование витража из строки.
@@ -29,8 +76,10 @@ class NameAmountExtractor:
         if not text:
             return None
 
+        text = NameAmountExtractor.replace_english_to_russian(text)
+
         # Проверяем наличие "шт" в тексте
-        if "шт" not in text and "ШТ" not in text:
+        if "шт" not in text.lower():
             return text.replace("\n", '')
 
         # Паттерн: всё до скобок, внутри которых есть "шт"

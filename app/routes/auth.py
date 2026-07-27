@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, Form, HTTPException, Request, status
 from fastapi.responses import RedirectResponse
 from sqlmodel import Session
-
+from pydantic import ValidationError
 from app.core.config import settings
 from app.core.database import get_session
 from app.core.security import create_access_token
@@ -17,12 +17,14 @@ async def register_page(request: Request):
         "auth/register.html",
         {
             "request": request,
-            "container_class": "card card-register"
+            "container_class": "card card-register",
         },
     )
 
+
 @auth_route.post("/register")
 async def register(
+    request: Request,
     username: str = Form(...),
     email: str = Form(...),
     password: str = Form(...),
@@ -30,19 +32,43 @@ async def register(
 ):
     service = AuthService(session)
 
-    data = RegisterRequest(
-        username=username,
-        email=email,
-        password=password,
-    )
-
     try:
+        data = RegisterRequest(
+            username=username,
+            email=email,
+            password=password,
+        )
+
         user = service.register_user(data)
 
-    except ValueError as e:
-        raise HTTPException(
+    except ValidationError as e:
+
+        error = e.errors()[0]["msg"]
+
+        return templates.TemplateResponse(
+            "auth/register.html",
+            {
+                "request": request,
+                "container_class": "card card-register",
+                "error": error,
+                "username": username,
+                "email": email,
+            },
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e),
+        )
+
+    except ValueError as e:
+
+        return templates.TemplateResponse(
+            "auth/register.html",
+            {
+                "request": request,
+                "container_class": "card card-register",
+                "error": str(e),
+                "username": username,
+                "email": email,
+            },
+            status_code=status.HTTP_400_BAD_REQUEST,
         )
 
     token = create_access_token(user.id)
@@ -56,7 +82,7 @@ async def register(
         key="access_token",
         value=token,
         httponly=True,
-        secure=False,      # позже True
+        secure=False,
         samesite="lax",
         max_age=settings.access_token_expire_minutes * 60,
     )
@@ -74,6 +100,7 @@ async def login_page(request: Request):
 
 @auth_route.post("/login")
 async def login(
+    request: Request,
     username: str = Form(...),
     password: str = Form(...),
     session: Session = Depends(get_session),
@@ -86,9 +113,14 @@ async def login(
     )
 
     if user is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid username or password",
+        return templates.TemplateResponse(
+            name="/auth/login.html",
+            request=request,
+            context={
+                "request": request,
+                "error": "Неверное имя пользователя или пароль.",
+            },
+            status_code=401,
         )
 
     token = create_access_token(user.id)
