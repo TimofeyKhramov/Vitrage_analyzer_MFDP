@@ -113,13 +113,13 @@ cp .env.example .env
 **Windows (PowerShell):**
 
 ```powershell
-Copy-Item env.example .env
+Copy-Item .env.example .env
 ```
 
 **Windows (CMD):**
 
 ```cmd
-copy env.example .env
+copy .env.example .env
 ```
 
 После создания файла `.env` при необходимости откройте его и укажите значения переменных окружения в соответствии с вашей конфигурацией.
