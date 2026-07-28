@@ -107,7 +107,7 @@ cd vitrage_analyzer_MFDP
 **Linux/macOS:**
 
 ```bash
-cp env.example .env
+cp .env.example .env
 ```
 
 **Windows (PowerShell):**
