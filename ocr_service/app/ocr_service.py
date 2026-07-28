@@ -85,6 +85,8 @@ class OcrService:
 
             try:
                 value = int(text)
+                if value // 10**4 >= 1:
+                    continue
             except ValueError:
                 continue
 
@@ -173,11 +175,10 @@ class OcrService:
                 borderType=cv2.BORDER_CONSTANT,
                 value=(255, 255, 255),  # белый фон
             )
-            cv2.imwrite('border.png', img_rot_pad)
 
             result = self.ocr.predict(
                 img_rot_pad,
-                use_textline_orientation=True,
+                use_textline_orientation=False,
                 return_word_box=False,
                 use_doc_orientation_classify=False,
             )
@@ -232,7 +233,7 @@ class OcrService:
             )
 
             return {
-                "name": " ".join(texts)
+                "name": " ".join(texts).split()[0]
                 if texts
                 else None,
             }

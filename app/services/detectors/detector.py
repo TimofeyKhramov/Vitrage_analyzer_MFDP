@@ -232,9 +232,6 @@ class DrawingDetector:
                     coords[best][:5]
                 )
 
-
-        os.makedirs("find_boxes", exist_ok=True)
-
         nodes = []
 
         for i, box in enumerate(boxes_array):

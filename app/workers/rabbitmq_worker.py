@@ -132,6 +132,8 @@ def main():
             host=settings.rabbitmq_host,
             port=settings.rabbitmq_port,
             credentials=credentials,
+            heartbeat=900,                  
+            blocked_connection_timeout=900
         )
     )
 

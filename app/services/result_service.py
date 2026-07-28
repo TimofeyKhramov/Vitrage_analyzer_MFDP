@@ -3,7 +3,7 @@ from sqlmodel import Session
 from app.models.analysis_result import AnalysisResult
 from app.models.document import Document
 from app.models.drawing import Drawing
-
+from sqlalchemy import delete
 
 class ResultService:
 
@@ -21,6 +21,11 @@ class ResultService:
 
         square = 0.0
         doors_amount = 0
+
+        self.session.exec(
+            delete(Drawing).where(
+                Drawing.document_id == document.id))
+        self.session.flush()
 
         for page_result in results:
 
