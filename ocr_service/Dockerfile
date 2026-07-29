@@ -17,6 +17,7 @@ COPY requirements.txt .
 RUN pip install --upgrade pip
 
 RUN pip install \
+    --default-timeout=1000 \
     paddlepaddle==3.2.0 \
     -i https://www.paddlepaddle.org.cn/packages/stable/cpu/
 
